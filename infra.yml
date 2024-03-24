@@ -78,12 +78,17 @@ Resources:
       SubnetId: !Ref PublicSubnet2
       RouteTableId: !Ref PublicRouteTable
 
-  # Grupo de seguridad para ECS
+  # Grupo de seguridad para ECS (apps)
   AppSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: "Grupo de seguridad para apps"
+      GroupDescription: "Grupo de seguridad para ECS"
       VpcId: !Ref VPCDev
+      SecurityGroupIngress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
 
   # Grupo de seguridad para Load Balancer
   LoadBalancerSecurityGroup:
@@ -91,6 +96,16 @@ Resources:
     Properties:
       GroupDescription: "Grupo de seguridad para Load Balancer"
       VpcId: !Ref VPCDev
+      SecurityGroupIngress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: "0.0.0.0/0"
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          DestinationSecurityGroupId: !Ref AppSecurityGroup
 
   # Grupo de seguridad para Base de Datos
   DatabaseSecurityGroup:
@@ -98,6 +113,11 @@ Resources:
     Properties:
       GroupDescription: "Grupo de seguridad para Base de Datos"
       VpcId: !Ref VPCDev
+      SecurityGroupIngress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          SourceSecurityGroupId: !Ref AppSecurityGroup
  
 Outputs:
   VPCId:
