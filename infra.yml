@@ -89,3 +89,28 @@ Resources:
           FromPort: "-1"
           ToPort: "-1"
           CidrIp: "0.0.0.0/0"
+
+Outputs:
+  VPCId:
+    Description: "ID de la VPC"
+    Value: !Ref VPCDev
+    Export:
+      Name: VPCId
+
+  PublicSubnet1Id:
+    Description: "ID de la Subred Pública 1"
+    Value: !Ref PublicSubnet1
+    Export:
+      Name: PublicSubnet1Id
+
+  PublicSubnet2Id:
+    Description: "ID de la Subred Pública 2"
+    Value: !Ref PublicSubnet2
+    Export:
+      Name: PublicSubnet2Id
+
+  SecurityGroupId:
+    Description: "ID del Grupo de Seguridad"
+    Value: !GetAtt SecurityGroup.GroupId
+    Export:
+      Name: SecurityGroupId
