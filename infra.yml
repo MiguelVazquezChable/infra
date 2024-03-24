@@ -78,47 +78,60 @@ Resources:
       SubnetId: !Ref PublicSubnet2
       RouteTableId: !Ref PublicRouteTable
 
-  # Grupo de seguridad para ECS (apps)
+    # ECS Security Group
   AppSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: "Grupo de seguridad para ECS"
+      GroupDescription: "Security Group for ECS"
       VpcId: !Ref VPCDev
       SecurityGroupIngress:
-        - IpProtocol: -1
-          FromPort: -1
-          ToPort: -1
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
           SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
 
-  # Grupo de seguridad para Load Balancer
+  # Load Balancer Security Group
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: "Grupo de seguridad para Load Balancer"
+      GroupDescription: "Security Group for Load Balancer"
       VpcId: !Ref VPCDev
       SecurityGroupIngress:
-        - IpProtocol: -1
-          FromPort: -1
-          ToPort: -1
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
           CidrIp: "0.0.0.0/0"
       SecurityGroupEgress:
-        - IpProtocol: -1
-          FromPort: -1
-          ToPort: -1
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          DestinationSecurityGroupId: !Ref AppSecurityGroup
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
           DestinationSecurityGroupId: !Ref AppSecurityGroup
 
-  # Grupo de seguridad para Base de Datos
+  # Database Security Group
   DatabaseSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: "Grupo de seguridad para Base de Datos"
+      GroupDescription: "Security Group for Database"
       VpcId: !Ref VPCDev
       SecurityGroupIngress:
-        - IpProtocol: -1
-          FromPort: -1
-          ToPort: -1
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
           SourceSecurityGroupId: !Ref AppSecurityGroup
- 
+
+
 Outputs:
   VPCId:
     Description: "ID de la VPC"
