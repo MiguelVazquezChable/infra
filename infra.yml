@@ -78,18 +78,27 @@ Resources:
       SubnetId: !Ref PublicSubnet2
       RouteTableId: !Ref PublicRouteTable
 
-  # Grupo de seguridad
-  SecurityGroup:
+  # Grupo de seguridad para ECS
+  AppSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Grupo de seguridad para la VPC
+      GroupDescription: "Grupo de seguridad para apps"
       VpcId: !Ref VPCDev
-      SecurityGroupIngress:
-        - IpProtocol: "-1"
-          FromPort: "-1"
-          ToPort: "-1"
-          CidrIp: "0.0.0.0/0"
 
+  # Grupo de seguridad para Load Balancer
+  LoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Grupo de seguridad para Load Balancer"
+      VpcId: !Ref VPCDev
+
+  # Grupo de seguridad para Base de Datos
+  DatabaseSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Grupo de seguridad para Base de Datos"
+      VpcId: !Ref VPCDev
+ 
 Outputs:
   VPCId:
     Description: "ID de la VPC"
@@ -121,8 +130,20 @@ Outputs:
     Export:
       Name: PrivateSubnet2Id
 
-  SecurityGroupId:
-    Description: "ID del Grupo de Seguridad"
-    Value: !GetAtt SecurityGroup.GroupId
+  AppSecurityGroupId:
+    Description: "ID del Grupo de Seguridad para apps"
+    Value: !GetAtt AppSecurityGroup.GroupId
     Export:
-      Name: SecurityGroupId
+      Name: AppSecurityGroupId
+
+  LoadBalancerSecurityGroupId:
+    Description: "ID del Grupo de Seguridad para Load Balancer"
+    Value: !GetAtt LoadBalancerSecurityGroup.GroupId
+    Export:
+      Name: LoadBalancerSecurityGroupId
+
+  DatabaseSecurityGroupId:
+    Description: "ID del Grupo de Seguridad para Base de Datos"
+    Value: !GetAtt DatabaseSecurityGroup.GroupId
+    Export:
+      Name: DatabaseSecurityGroupId
