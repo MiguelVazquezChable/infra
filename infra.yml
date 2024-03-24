@@ -78,59 +78,26 @@ Resources:
       SubnetId: !Ref PublicSubnet2
       RouteTableId: !Ref PublicRouteTable
 
-    # ECS Security Group
+     # Grupo de seguridad para ECS (app-sg-dev)
   AppSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: "Security Group for ECS"
+      GroupDescription: "Grupo de seguridad para ECS"
       VpcId: !Ref VPCDev
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
 
-  # Load Balancer Security Group
+  # Grupo de seguridad para Load Balancer (lb-sg-dev)
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: "Security Group for Load Balancer"
+      GroupDescription: "Grupo de seguridad para Load Balancer"
       VpcId: !Ref VPCDev
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: "0.0.0.0/0"
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          CidrIp: "0.0.0.0/0"
-      SecurityGroupEgress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          DestinationSecurityGroupId: !Ref AppSecurityGroup
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          DestinationSecurityGroupId: !Ref AppSecurityGroup
 
-  # Database Security Group
+  # Grupo de seguridad para Base de Datos (db-sg-dev)
   DatabaseSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: "Security Group for Database"
+      GroupDescription: "Grupo de seguridad para Base de Datos"
       VpcId: !Ref VPCDev
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 3306
-          ToPort: 3306
-          SourceSecurityGroupId: !Ref AppSecurityGroup
-
 
 Outputs:
   VPCId:
