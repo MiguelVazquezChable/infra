@@ -108,6 +108,18 @@ Outputs:
     Value: !Ref PublicSubnet2
     Export:
       Name: PublicSubnet2Id
+    
+  PrivateSubnet1Id:
+    Description: "ID de la Subred Privada 1"
+    Value: !Ref PrivateSubnet1
+    Export:
+      Name: PrivateSubnet1Id
+
+  PrivateSubnet2Id:
+    Description: "ID de la Subred Privada 2"
+    Value: !Ref PrivateSubnet2
+    Export:
+      Name: PrivateSubnet2Id
 
   SecurityGroupId:
     Description: "ID del Grupo de Seguridad"
