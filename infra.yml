@@ -78,26 +78,49 @@ Resources:
       SubnetId: !Ref PublicSubnet2
       RouteTableId: !Ref PublicRouteTable
 
-     # Grupo de seguridad para ECS (app-sg-dev)
+  # Grupo de seguridad para la aplicación ECS
   AppSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: "Grupo de seguridad para ECS"
+      GroupDescription: "Grupo de seguridad para la aplicación ECS"
       VpcId: !Ref VPCDev
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+          Description: "Allow all outbound HTTPS traffic for ECR and other AWS services"
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+          Description: "Allow all outbound HTTP traffic for external services"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
+          Description: "Allow inbound HTTP traffic from the Load Balancer"
 
-  # Grupo de seguridad para Load Balancer (lb-sg-dev)
+  # Grupo de seguridad para el Load Balancer
   LoadBalancerSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: "Grupo de seguridad para Load Balancer"
-      VpcId: !Ref VPCDev
+    # ... (propiedades existentes) ...
+    SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+        Description: "Allow all inbound HTTP traffic"
 
-  # Grupo de seguridad para Base de Datos (db-sg-dev)
+  # Grupo de seguridad para la Base de Datos
   DatabaseSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: "Grupo de seguridad para Base de Datos"
-      VpcId: !Ref VPCDev
+    # ... (propiedades existentes) ...
+    SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 3306 # Puerto estándar de MySQL/MariaDB
+        ToPort: 3306
+        SourceSecurityGroupId: !Ref AppSecurityGroup
+        Description: "Allow inbound traffic from ECS application to the database"
 
 Outputs:
   VPCId:
